@@ -170,13 +170,55 @@ JSONInputFile::~JSONInputFile()
 
 void JSONInputFile::WriteFile(const std::string& filename, MCInput& InputValues) const {
     json j;
-    j["pi"] = 3.14159;
+    j["header"] = InputValues.header.c_str();
+    
     std::ofstream fsJSONFile(filename.c_str());
     if (fsJSONFile.is_open() == false) {
       return;
     }
+    int deckcounter = 1;
+    size_t i;
+    // If we have discrete Gammas
+    if (InputValues.vGammaEnergies.size()) {
+      j["discrete_gamma"]["define_energy"] = deckcounter;
+      j["discrete_gamma"]["line_count"] = InputValues.vGammaEnergies.size();
+      j["discrete_gamma"]["data"] = WriteData(InputValues.vGammaEnergies,InputValues.vGammaEnergies,true, m_scale);
+      j["discrete_gamma"]["associated_photon_intensity_integrated"]["units"] = "photons/sec/gm";
+      j["discrete_gamma"]["associated_photon_intensity_integrated"]["value"] = InputValues.totals[MCInput::LINE_TOTAL];
+      deckcounter++;
+    }
+    // If we have Binned Gammmas
+    if (InputValues.vGammaBinBoundaries.size()) {
+      j["binned_gamma"]["define_energy"] = deckcounter;
+      j["binned_gamma"]["bin_count"] = InputValues.vGammaBinBoundaries.size()-1;
+      j["binned_gamma"]["data"] = WriteData(InputValues.vGammaBinBoundaries,InputValues.vGammaBinIntensities,true, m_scale);
+      j["binned_gamma"]["associated_photon_intensity_integrated"]["units"] = "photons/sec/gm";
+      j["binned_gamma"]["associated_photon_intensity_integrated"]["value"] = InputValues.totals[MCInput::LINE_TOTAL];
+      deckcounter++;
+    }
+
+    // If we have Brem
+    if (InputValues.vBremBinBoundaries.size()) {
+      j["binned_brem"]["define_energy"] = deckcounter;
+      j["binned_brem"]["bin_count"] = InputValues.vBremBinBoundaries.size()-1;
+      j["binned_brem"]["data"] = WriteData(InputValues.vBremBinBoundaries,InputValues.vBremIntensities,true, m_scale);
+      j["binned_brem"]["associated_photon_intensity_integrated"]["units"] = "photons/sec/gm";
+      j["binned_brem"]["associated_photon_intensity_integrated"]["value"] = InputValues.totals[MCInput::LINE_TOTAL];
+      deckcounter++;
+    }
+    j["totals"]["integrated_intensity"] = InputValues.totals[MCInput::TOTAL_TOTAL];
     fsJSONFile << std::setw(4) << j << std::endl;
     fsJSONFile.close();
+}
+
+std::vector<std::vector<double>> JSONInputFile::WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, double scale) const {
+    std::vector<std::vector<double>> data = std::vector<std::vector<double>>();
+    size_t i;
+    for (i = 0; i < array1.size(); i+=4) {
+      std::vector<double> v({array1[i]*scale, array2[i]});
+      data.push_back(v);
+    }
+    return data;
 }
 
 COGInputFile::COGInputFile() : m_scale(0.001)

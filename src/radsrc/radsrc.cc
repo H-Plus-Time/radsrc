@@ -195,7 +195,7 @@ int main(int argc, const char *argv[]) {
       cog.WriteFile("output.cog", mci);
       
       JSONInputFile json;
-      mci.header = radsource.getReport("C ");
+      mci.header = radsource.getReport("");
       json.WriteFile("output.json", mci);
 
       if (options.interactive) {
