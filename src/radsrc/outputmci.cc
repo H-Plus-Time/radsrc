@@ -31,6 +31,8 @@ Additional BSD Notice
 #include <string>
 #include <stdio.h>
 #include "mcinput.h"
+#include "json.hpp"
+using json = nlohmann::json;
 
 MCNPInputFile::MCNPInputFile() : m_scale(0.001)
 {
@@ -157,6 +159,25 @@ void MCNPInputFile::WriteData(const std::vector<double>& array, std::ostream& os
 
 /* -------------------------------------------- */
 
+
+JSONInputFile::JSONInputFile(): m_scale(0.001)
+{
+}
+
+JSONInputFile::~JSONInputFile()
+{
+}
+
+void JSONInputFile::WriteFile(const std::string& filename, MCInput& InputValues) const {
+    json j;
+    j["pi"] = 3.14159;
+    std::ofstream fsJSONFile(filename.c_str());
+    if (fsJSONFile.is_open() == false) {
+      return;
+    }
+    fsJSONFile << std::setw(4) << j << std::endl;
+    fsJSONFile.close();
+}
 
 COGInputFile::COGInputFile() : m_scale(0.001)
 {

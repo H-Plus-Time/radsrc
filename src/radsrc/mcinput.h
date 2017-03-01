@@ -55,6 +55,19 @@ private:
    MCNPInputFile& operator=(const MCNPInputFile&);
 };
 
+class JSONInputFile {
+public:
+   JSONInputFile(void);
+   ~JSONInputFile(void);
+   void WriteFile(const std::string& filename, MCInput& InputValues) const;
+private:
+   double m_scale;
+   void WriteData(const std::vector<double>& array, std::ostream& os, double scale=1.0) const;
+   void WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, std::ostream& os, double scale=1.0) const;
+   JSONInputFile(const JSONInputFile&);
+   JSONInputFile& operator=(const JSONInputFile&);
+};
+
 class COGInputFile {
 public:
    COGInputFile(void);

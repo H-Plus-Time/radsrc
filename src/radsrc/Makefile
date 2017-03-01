@@ -20,7 +20,10 @@ clean:
 .cc.o:
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-radsrc.o: radsrc.cc useriface.h mcinput.h
+radsrc.o: radsrc.cc useriface.h mcinput.h outputjson.o
+outputjson.o: json.hpp
+json.hpp:
+	wget -c -N https://github.com/nlohmann/json/releases/download/v2.1.1/json.hpp
 useriface.o: useriface.cc useriface.h
 outputmci.o: outputmci.cc mcinput.h
 bins.o: bins.cc bins.h

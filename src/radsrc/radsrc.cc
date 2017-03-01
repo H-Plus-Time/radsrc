@@ -193,6 +193,10 @@ int main(int argc, const char *argv[]) {
       COGInputFile cog;
       mci.header = radsource.getReport("$ ");
       cog.WriteFile("output.cog", mci);
+      
+      JSONInputFile json;
+      mci.header = radsource.getReport("C ");
+      json.WriteFile("output.json", mci);
 
       if (options.interactive) {
          if (mci.vGammaEnergies.size()) {
