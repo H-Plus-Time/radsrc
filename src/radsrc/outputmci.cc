@@ -29,6 +29,7 @@ Additional BSD Notice
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <map>
 #include <stdio.h>
 #include "mcinput.h"
 #include "json.hpp"
@@ -211,12 +212,14 @@ void JSONInputFile::WriteFile(const std::string& filename, MCInput& InputValues)
     fsJSONFile.close();
 }
 
-std::vector<std::vector<double>> JSONInputFile::WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, double scale) const {
-    std::vector<std::vector<double>> data = std::vector<std::vector<double>>();
+std::map<std::string, std::vector<double>> JSONInputFile::WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, double scale) const {
+    std::map<std::string, std::vector<double>> data = std::map<std::string, std::vector<double>>();
+    data["energy"] = std::vector<double>();
+    data["intensity"] = std::vector<double>();
     size_t i;
     for (i = 0; i < array1.size(); i+=4) {
-      std::vector<double> v({array1[i]*scale, array2[i]});
-      data.push_back(v);
+      data["energy"].push_back(array1[i]*scale);
+      data["intensity"].push_back(array2[i]);
     }
     return data;
 }

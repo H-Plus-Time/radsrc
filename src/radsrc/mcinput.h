@@ -63,7 +63,7 @@ public:
 private:
    double m_scale;
    void WriteData(const std::vector<double>& array, std::ostream& os, double scale=1.0) const;
-   std::vector<std::vector<double>> WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, double scale=1.0) const;
+   std::map<std::string, std::vector<double>> WriteData(const std::vector<double>& array1, const std::vector<double>& array2, bool binned, double scale=1.0) const;
    JSONInputFile(const JSONInputFile&);
    JSONInputFile& operator=(const JSONInputFile&);
 };
